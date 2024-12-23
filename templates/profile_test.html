@@ -1,0 +1,31 @@
+<html>
+
+    <head>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+    </head>
+
+    <body>
+
+<div id="summ2"></div>
+<input type="number" id="a" >
+<input type="number" id="b" >
+<input type="number" id="c" >
+
+    <script>
+
+var a = document.getElementById("a"),
+    b = document.getElementsByName("b"),
+    c = document.getElementById("c");
+    c.value = 0;
+    b.onchange = a.onchange  = function () {
+    c.value = parseInt(a.value)+ parseInt(b.value);
+    };
+        
+        </script>
+
+    </body>
+
+</html>

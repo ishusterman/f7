@@ -1,0 +1,158 @@
+{% load staticfiles %}
+{% load i18n static %}
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<br lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+
+<title>{% block title %}{% endblock %}</title>
+
+
+
+<script type="text/javascript" src="{% static 'jquery.dajax.core.js' %}"></script>
+<script type="text/javascript" src="{% static 'jquery-1.12.3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datatables.min.js' %}"> </script>
+
+<link rel="stylesheet" media="all" href="{% static "jquery.dataTables.min.css" %}" type="text/css">
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}"/>
+
+
+
+
+ <link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}"/>
+
+
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+
+
+<script type="text/javascript" src="/jsi18n/"></script>
+<link href="/static/select2/css/select2.css" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+<script type="text/javascript" src="/static/select2/js/select2.jquery_ready.js"></script>
+<script type="text/javascript" src="/static/select2/js/select2.jquery_ui_sortable.js"></script>
+<script type="text/javascript" src="/static/select2/js/select2.js"></script>
+<script type="text/javascript" src="/static/admin/js/collapse.js"></script>
+<script type="text/javascript" src="/static/admin/js/inlines.js"></script>
+
+     <link rel="stylesheet" href="/static/style_aware.css">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+
+
+<style type="text/css">
+  #trJMenu td { white-space: nowrap; width: auto; border: 2px solid white}
+  #trJMenu li { white-space: nowrap; width: auto; border: 2px solid white}
+  cool {border-style: hidden}
+
+    .unselectable{
+     background-color: #ddd;
+     cursor: not-allowed;
+}
+</style>
+
+
+
+<script language="javascript" type="text/javascript">
+  $(document).ready(function(){
+    $("#trJMenu").menu( { position: { my: "left top", at: "center bottom" , } } );
+  });
+</script>
+
+
+
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+</head>
+<body>
+{% load i18n %}
+
+
+<table border="0">
+  <tr  id='trJMenu'>
+      <td >
+      <a href='/index/'>Данные</a>
+
+    </td>
+      <td >
+      <a href='#'>Отчеты</a>
+      <ul>
+        <li><a href='/index/report1/'>Отчеты</a></li>
+      </ul>
+    </td>
+
+    <td>
+      <a href='/index/logoff/'>Выход</a>
+    </td>
+  </tr>
+</table>
+
+
+
+
+<a>Добро пожаловать, {{ User }} / </a>
+<!-- <a href=/cool_view/password_change/> / ИЗМЕНИТЬ ПАРОЛЬ /</a> -->
+<!-- <a href=/request/logoff/> Выйти</a> </br> -->
+
+
+<form method="post" action="/index/report1/">
+    {% csrf_token %}
+    <br class="field-box field-request_date">
+
+
+    <a>Вид оплаты</a>
+        <select name="type_pay">
+            <option value="0">Все виды</option>
+            {% for item in type_pay.all %}
+            <option value="{{item.id}}">{{ item.type_pay }}</option>
+             {% endfor %}
+        </select> </br>
+
+    <a>Отделение</a>
+        <select name="department">
+            {% for item in department.all %}
+            <option value="{{item.id}}">{{ item.department }}</option>
+             {% endfor %}
+        </select> </br>
+
+    <a>Дата1</a>
+        <input type="text" name="date1" value="{{ date1 }}" class="vDateField" size="10" required id="id_request_date" /></br>
+    <a>Дата2</a>
+    <input type="text" name="date2" value="{{ date2 }}" class="vDateField" size="10" required id="id_request_date" /></br>
+
+    <input type="submit" value="Отчет отделения" name="report1"/>
+    <input type="submit" value="Движение. РАО отдельно" name="report2"/>
+    <input type="submit" value="Движение. РАО подробно" name="report3"/>
+    <input type="submit" value="Отчет по движению" name="report4"/>
+    </div>
+
+
+</form>
+
+
+
+
+    <!-- END Content -->
+
+    {% block footer %}<div id="footer"></div>{% endblock %}
+
+<!-- END Container -->
+
+
+
+</body>
+</html>

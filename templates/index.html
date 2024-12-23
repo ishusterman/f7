@@ -1,0 +1,329 @@
+{% load staticfiles %}
+{% load i18n static %}
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<br lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+
+<title>{% block title %}{% endblock %}</title>
+
+<!--
+<script type="text/javascript" src="/static/select2/js/select2.jquery_ready.js"></script>
+<script type="text/javascript" src="/static/select2/js/select2.jquery_ui_sortable.js"></script>
+<script type="text/javascript" src="/static/select2/js/select2.js"></script>
+<link href="/static/select2/css/select2.css" type="text/css" media="all" rel="stylesheet" />
+<link rel="stylesheet" href="/resources/demos/style.css">
+-->
+
+
+
+<script type="text/javascript" src="{% static 'jquery.dajax.core.js' %}"></script>
+<script type="text/javascript" src="{% static 'jquery-1.12.3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datatables.min.js' %}"> </script>
+<link rel="stylesheet" media="all" href="{% static "jquery.dataTables.min.css" %}" type="text/css">
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}"/>
+
+
+
+
+ <link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}"/>
+
+
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+
+
+<!-- <script type="text/javascript" src="/jsi18n/"></script> -->
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+<script type="text/javascript" src="/static/admin/js/collapse.js"></script>
+<script type="text/javascript" src="/static/admin/js/inlines.js"></script>
+
+     <link rel="stylesheet" href="/static/style_aware.css">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+
+
+<style type="text/css">
+  #trJMenu td { white-space: nowrap; width: auto; border: 2px solid white}
+  #trJMenu li { white-space: nowrap; width: auto; border: 2px solid white}
+  cool {border-style: hidden}
+
+    .unselectable{
+     background-color: #ddd;
+     cursor: not-allowed;
+}
+</style>
+
+
+
+<script language="javascript" type="text/javascript">
+  $(document).ready(function(){
+    $("#trJMenu").menu( { position: { my: "left top", at: "center bottom" , } } );
+  });
+</script>
+
+
+<!-- переходы по enter -->
+<script language="javascript" type="text/javascript">
+$(document).ready(function() {
+        $(document).keypress(function(event) {
+            if(event.keyCode==13){
+                $(event.target).parent().next().find('input').select().focus();
+                event.preventDefault();
+            }
+        });
+    });
+
+</script>
+
+
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+</head>
+<body>
+{% load i18n %}
+
+
+<table border="0">
+  <tr  id='trJMenu'>
+      <td >
+      <a href='/index/'>Данные</a>
+
+    </td>
+      <td >
+      <a href='#'>Отчеты</a>
+      <ul>
+        <li><a href='/index/report1/'>Отчеты</a></li>
+      </ul>
+    </td>
+
+    <td>
+      <a href='/index/logoff/'>Выход</a>
+    </td>
+  </tr>
+</table>
+
+<!-- <a href=/cool_view/password_change/> / ИЗМЕНИТЬ ПАРОЛЬ /</a> -->
+<!-- <a href=/request/logoff/> Выйти</a> </br> -->
+
+
+<form method="post" action="/index/">
+    {% csrf_token %}
+    <div class="field-box field-request_date">
+
+
+    <a>Вид оплаты</a>
+        <select name="type_pay">
+            {% for item in type_pay.all %}
+            <option value="{{item.id}}" {% if type_pay_item == item.id  %}selected{% endif %}>{{ item.type_pay }}</option>
+             {% endfor %}
+        </select>
+
+    <a>Дата</a>
+    <input type="text" name="date" value="{{ date }}" class="vDateField" size="10" required id="id_request_date" />
+
+    <input type="submit" value="Показать" name="filter"/>
+    </div>
+</form>
+
+<form method="post" action="/index/">
+     {% csrf_token %}
+ {{ formset.management_form }}
+
+
+
+
+<!-- <input type="submit" value="Перенести остатки" name="move"/> -->
+<input type="submit" value="Сохранить" name="save"/>
+
+<!-- два невидимых поля для сохранения данных -->
+<td> <input name=type_pay_item type="text" size="4" value={{ type_pay_item}} hidden > </td>
+<td> <input name=date type="text" size="4" value={{ date }} hidden> </td>
+<!-- два невидимых поля для сохранения данных -->
+
+    <table >
+            <thead>
+             <tr>
+                 <td style="display:none;" > <a>ID</a> </td>
+            <td> <a>Отделение</a> </td>
+                 <td> <a>Вид реанимации</a> </td>
+                 <td style="display:none;"> <a>Вид оплаты</a> </td>
+                 <td style="display:none;"> <a>Автор</a> </td>
+                 <td style="display:none;"> <a>Дата</a> </td>
+            <td> <a>Состоит</a> </td>
+            <td> <a>Поступило всего</a> </td>
+            <td> <a>Пост из ДС</a> </td>
+            <td> <a>Пост из села</a> </td>
+            <td> <a>Детей до 17 лет</a> </td>
+                 <td> <a>Старше 60</a> </td>
+            <td> <a>Переведено из др. отд.</a> </td>
+            <td> <a>Переведено в др. отд.</a> </td>
+                 <td> <a>Выписано всего</a> </td>
+
+            <td> <a>Вып. в др. стац.</a> </td>
+
+            <td> <a>Вып. в ДС</a> </td>
+                 <td> <a>Умерло</a> </td>
+            <td> <a>Состоит всего</a> </td>
+                 <td> <a>Состоит сел. жителей</a> </td>
+            <td> <a>Состоит матерей</a> </td>
+
+             </tr>
+        </thead>
+        <tbody>
+
+    {% for form in formset %}
+
+        <tr {% if form.type_rean.value == 1 %} bgcolor="#ffcc00"{% endif %}>
+
+
+        <td style="display:none;">  {{ form.id}}</td>
+
+
+        <!-- выводим название отделения без редактирования -->
+        {% for item in department %}
+            {% if item.id == form.department.value %}
+                <td>{{item.department}} </td>
+        {% endif %}
+        {% endfor %}
+
+        <!-- выводим название вида реанимации без редактирования -->
+        {% for item in type_rean %}
+            {% if item.id == form.type_rean.value %}
+                <td>{{item.type_rean}} </td>
+        {% endif %}
+        {% endfor %}
+
+
+        <td style="display:none;">  {{ form.department}}</td>
+            <td style="display:none;"> {{ form.type_rean}} </td>
+
+
+            <td style="display:none;"> {{form.type_pay  }}  </td>
+            <td style="display:none;">  {{ form.Add}}</td>
+            <td style="display:none;">{{ form.date }} </td>
+
+            <td style="display:none;"> <input name={{form.count.html_name  }} type="text" size="4" value={{ form.count.value }}> </td>
+            <td> {{ form.count.value }} </td>
+
+            <td> <input name={{form.goin.html_name  }} type="text" size="4" value={{ form.goin.value }} class="access"> </td>
+            <td> <input name={{form.go_in_from_ds.html_name  }} type="text" size="4" value={{ form.go_in_from_ds.value }} class="access"> </td>
+            <td> <input name={{form.go_in_from_selo.html_name  }} type="text" size="4" value={{ form.go_in_from_selo.value }} class="access"> </td>
+            <td> <input name={{form.go_in_to_17.html_name  }} type="text" size="4" value={{ form.go_in_to_17.value }} class="access"> </td>
+            <td> <input name={{form.go_in_up_60.html_name  }} type="text" size="4" value={{ form.go_in_up_60.value }} class="access"> </td>
+            <td> <input name={{form.go_in_from_other_stac.html_name  }} type="text" size="4" value={{ form.go_in_from_other_stac.value }} class="access"> </td>
+            <td> <input name={{form.go_in_to_other_stac.html_name  }} type="text" size="4" value={{ form.go_in_to_other_stac.value }} class="access"> </td>
+            <td> <input name={{form.go_out.html_name  }} type="text" size="4" value={{ form.go_out.value }} class="access"> </td>
+
+            <td> <input name={{form.go_out_to_other_stac.html_name }} type="text" size="4" value={{ form.go_out_to_other_stac.value }} class="access"> </td>
+
+            <td> <input name={{form.go_out_to_ds.html_name  }} type="text" size="4" value={{ form.go_out_to_ds.value }} class="access"> </td>
+
+            <td> <input name={{form.death.html_name  }} type="text" size="4" value={{ form.death.value }}> </td>
+
+            <td style="display:none;"> <input name={{form.count_finish.html_name  }} type="text" size="4" value={{ form.count_finish.value }} disabled> </td>
+            <td>{{ form.count_finish.value }} </td>
+
+            <td> <input name={{form.count_finish_selo.html_name  }} type="text" size="4" value={{ form.count_finish_selo.value }}> </td>
+            <td> <input name={{form.count_finish_mother.html_name  }} type="text" size="4" value={{ form.count_finish_mother.value }}> </td>
+
+        </tr>
+    {% endfor %}
+
+
+    {% for rec in foot1 %}
+        <td style="display:none;">  </td>
+               <tr height = "30" bgcolor="#f2afa0">
+              {% for item in rec %}
+            <td> {{ item }} </td>
+            {% endfor %}
+                </tr>
+        {% endfor %}
+
+
+               {% for rec in foot2 %}
+                   <td style="display:none;">  </td>
+                   <tr bgcolor="#b0e6a5">
+                {% for item in rec %}
+                    <td>{{ item }} </td>
+                {% endfor %}
+                   </tr>
+                {% endfor %}
+
+
+       </tbody>
+    </table>
+
+</form>
+
+<script>
+
+
+$("#example").dataTable(
+    {
+        "lengthChange": false,
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+        switch(aData[7]){
+            case "<a>+</a>":
+                $(nRow).css('color', 'red')
+                break;
+        }},
+
+    "pageLength": 25,
+    language: {
+      "processing": "Подождите...",
+      "search": "Поиск:",
+      "lengthMenu": "Показать _MENU_ записей",
+      "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+      "infoEmpty": "Записи с 0 до 0 из 0 записей",
+      "infoFiltered": "(отфильтровано из _MAX_ записей)",
+      "infoPostFix": "",
+      "loadingRecords": "Загрузка записей...",
+      "zeroRecords": "Записи отсутствуют.",
+      "emptyTable": "В таблице отсутствуют данные",
+      "paginate": {
+        "first": "Первая",
+        "previous": "Предыдущая",
+        "next": "Следующая",
+        "last": "Последняя"
+      },
+      "aria": {
+        "sortAscending": ": активировать для сортировки столбца по возрастанию",
+        "sortDescending": ": активировать для сортировки столбца по убыванию"
+      }
+  }}
+
+
+
+
+);
+
+</script>
+
+
+
+    <!-- END Content -->
+
+    {% block footer %}<div id="footer"></div>{% endblock %}
+
+<!-- END Container -->
+
+
+
+</body>
+</html>
